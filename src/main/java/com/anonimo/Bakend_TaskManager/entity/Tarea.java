@@ -10,7 +10,7 @@ import java.util.Date;
 public class Tarea {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    private Long id;
     private  String namTarea;
     private  String descripcion;
     @Temporal(TemporalType.DATE)
@@ -20,17 +20,17 @@ public class Tarea {
     }
 
     public Tarea(Integer id, String namTarea, String descripcion, Date fecha_creacion) {
-        this.id = id;
+        this.id = Long.valueOf(id);
         this.namTarea = namTarea;
         this.descripcion = descripcion;
         this.fecha_creacion = fecha_creacion;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

@@ -1,51 +1,49 @@
 package com.anonimo.Bakend_TaskManager.controller;
 
 import com.anonimo.Bakend_TaskManager.entity.Tarea;
+import com.anonimo.Bakend_TaskManager.repository.TareaRepository;
 import com.anonimo.Bakend_TaskManager.service.TareaService;
 import jakarta.persistence.NamedStoredProcedureQueries;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController
 //http://localhost:8080/api/tarea
-@RequestMapping("/api/tarea")
 @CrossOrigin(origins ="http://localhost:4200")
+@RestController
+@RequestMapping("/api")
 public class TareaController {
+    @Autowired
+    private TareaService tareaService;
 
-    private final TareaService tareaService;
-
-    public TareaController(TareaService tareaService) {
-        this.tareaService = tareaService;
+    @GetMapping("/tareas")
+    public List<Tarea> index(){
+        return tareaService.findall();
     }
-
-    //http://localhost:8080/api/tarea
-    @PostMapping
-    public Tarea save(@RequestBody Tarea tarea){
-        return  tareaService.save(tarea);
-    }
-    //http://localhost:8080/api/tarea
-    @GetMapping
-    public List<Tarea> findAll(){
-        return tareaService.finAdll();
-    }
-    //http://localhost:8080/api/tarea/1
-    @GetMapping("/{id}")
-    public Tarea findById(@PathVariable Integer id){
+    @GetMapping("/tareas/{id}")
+    public Tarea show(@PathVariable Long id){
         return tareaService.findById(id);
     }
-    //http://localhost:8080/api/tarea/1
-    @DeleteMapping("/{id}")
-    public void deleteById(@PathVariable Integer id){
-        tareaService.deleteById(id);
+
+    @PostMapping("/tareas")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Tarea create(@RequestBody Tarea tarea){
+        return tareaService.save(tarea);
     }
-    //http://localhost:8080/api/tarea
-    @PutMapping
-    public Tarea updateTarea(@RequestBody Tarea tarea){
-        Tarea tareaDB= tareaService.findById(tarea.getId());
-        tareaDB.setNamTarea(tarea.getNamTarea());
-        tareaDB.setDescripcion(tarea.getDescripcion());
-        tareaDB.setFecha_creacion(tarea.getFecha_creacion());
-        return  tareaService.update(tareaDB);
+    @PutMapping("/tareas/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Tarea update(@RequestBody Tarea tarea, @PathVariable Long id){
+        Tarea tareaActual = tareaService.findById(id);
+        tareaActual.setNamTarea(tarea.getNamTarea());
+        tareaActual.setDescripcion(tarea.getDescripcion());
+        tareaActual.setFecha_creacion(tarea.getFecha_creacion());
+        return tareaService.save(tareaActual);
+    }
+    @DeleteMapping("/tareas/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id){
+        tareaService.delete(id);
     }
 }
